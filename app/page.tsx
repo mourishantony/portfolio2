@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import HeroCTA from '@/components/sections/HeroCTA'
 import ProfileSection from '@/components/sections/ProfileSection'
+import { GithubIcon } from '@/components/ui/SocialIcons'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -472,46 +473,59 @@ function EmptyProjectsState() {
     <div
       style={{
         textAlign: 'center',
-        padding: '80px 24px',
+        padding: '64px 24px',
         border: '1px dashed rgba(99,102,241,0.2)',
         borderRadius: '20px',
         background: 'rgba(99,102,241,0.03)',
+        maxWidth: '520px',
+        margin: '0 auto',
       }}
     >
       <div
         style={{
-          width: 64, height: 64,
-          borderRadius: '16px',
+          width: 56, height: 56,
+          borderRadius: '14px',
           background: 'rgba(99,102,241,0.1)',
           border: '1px solid rgba(99,102,241,0.2)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto 24px',
+          margin: '0 auto 20px',
         }}
       >
-        <Brain size={28} color="#6366f1" />
+        <Brain size={26} color="#6366f1" />
       </div>
-      <h3 style={{ color: '#e2e8f0', fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>
-        No projects yet
+      <h3 style={{ color: '#e2e8f0', fontSize: '18px', fontWeight: 700, marginBottom: '8px' }}>
+        Projects Updating Soon
       </h3>
-      <p style={{ color: '#475569', fontSize: '14px', maxWidth: '360px', margin: '0 auto 24px' }}>
-        Add your first project via the admin panel. It will appear here instantly — no redeploy needed.
+      <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '380px', margin: '0 auto 20px', lineHeight: 1.6 }}>
+        Production ML systems and research projects are currently being prepared. In the meantime, explore my repositories on GitHub.
       </p>
       <a
-        href="/paapu"
+        href="https://github.com/mourishantony"
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
           padding: '10px 20px',
           borderRadius: '8px',
-          background: 'rgba(99,102,241,0.1)',
-          border: '1px solid rgba(99,102,241,0.25)',
-          color: '#818cf8',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          color: '#e2e8f0',
           textDecoration: 'none',
-          fontSize: '14px',
+          fontSize: '13px',
           fontWeight: 600,
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
         }}
       >
-        <Zap size={14} />
-        Add First Project
+        <GithubIcon size={15} />
+        View GitHub Repositories
       </a>
     </div>
   )
