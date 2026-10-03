@@ -20,10 +20,11 @@ export async function GET() {
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
 
-    if (error || !data || data.length === 0) {
-      return Response.json({ projects: MOCK_PROJECTS })
+    if (error) {
+      console.error('[GET /api/projects] Supabase error:', error.message)
+      return Response.json({ projects: MOCK_PROJECTS, error: error.message })
     }
-    return Response.json({ projects: data })
+    return Response.json({ projects: data ?? [] })
   } catch {
     return Response.json({ projects: MOCK_PROJECTS })
   }
@@ -76,6 +77,11 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[POST /api/projects] Supabase error:', error.message)
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+        return Response.json({
+          error: 'Supabase Row-Level Security blocked this operation. Please add your SUPABASE_SERVICE_ROLE_KEY to .env.local (from Supabase Dashboard → Project Settings → API Keys).'
+        }, { status: 403 })
+      }
       return Response.json({ error: error.message }, { status: 500 })
     }
 
@@ -101,14 +107,19 @@ export async function DELETE(request: NextRequest) {
     const supabase = serverClient()
     if (!supabase) {
       return Response.json(
-        { success: true, mocked: true, message: 'Removed from local view.' },
-        { status: 200 }
+        { error: 'Supabase is not configured. Please add your credentials in .env.local.' },
+        { status: 503 }
       )
     }
     const { error } = await supabase.from('projects').delete().eq('id', id)
 
     if (error) {
       console.error('[DELETE /api/projects] Supabase error:', error.message)
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+        return Response.json({
+          error: 'Supabase Row-Level Security blocked this deletion. Please add your SUPABASE_SERVICE_ROLE_KEY to .env.local (from Supabase Dashboard → Project Settings → API Keys).'
+        }, { status: 403 })
+      }
       return Response.json({ error: error.message }, { status: 500 })
     }
 

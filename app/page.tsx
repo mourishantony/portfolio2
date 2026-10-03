@@ -39,11 +39,11 @@ async function getProjects(): Promise<Project[]> {
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
 
-    if (error || !data || data.length === 0) {
-      if (error) console.warn('[getProjects] Supabase notice (using fallback data):', error.message)
+    if (error) {
+      console.warn('[getProjects] Supabase notice (using fallback data):', error.message)
       return MOCK_PROJECTS
     }
-    return (data as Project[]) ?? MOCK_PROJECTS
+    return (data as Project[]) ?? []
   } catch (err) {
     console.warn('[getProjects] Supabase fetch failed, using fallback data.')
     return MOCK_PROJECTS
@@ -62,11 +62,11 @@ async function getAchievements(): Promise<Achievement[]> {
       .select('*')
       .order('date', { ascending: false })
 
-    if (error || !data || data.length === 0) {
-      if (error) console.warn('[getAchievements] Supabase notice (using fallback data):', error.message)
+    if (error) {
+      console.warn('[getAchievements] Supabase notice (using fallback data):', error.message)
       return MOCK_ACHIEVEMENTS
     }
-    return (data as Achievement[]) ?? MOCK_ACHIEVEMENTS
+    return (data as Achievement[]) ?? []
   } catch (err) {
     console.warn('[getAchievements] Supabase fetch failed, using fallback data.')
     return MOCK_ACHIEVEMENTS

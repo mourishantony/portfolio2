@@ -19,10 +19,11 @@ export async function GET() {
       .select('*')
       .order('date', { ascending: false })
 
-    if (error || !data || data.length === 0) {
-      return Response.json({ achievements: MOCK_ACHIEVEMENTS })
+    if (error) {
+      console.error('[GET /api/achievements] Supabase error:', error.message)
+      return Response.json({ achievements: MOCK_ACHIEVEMENTS, error: error.message })
     }
-    return Response.json({ achievements: data })
+    return Response.json({ achievements: data ?? [] })
   } catch {
     return Response.json({ achievements: MOCK_ACHIEVEMENTS })
   }
@@ -84,6 +85,11 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[POST /api/achievements] Supabase error:', error.message)
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+        return Response.json({
+          error: 'Supabase Row-Level Security blocked this operation. Please add your SUPABASE_SERVICE_ROLE_KEY to .env.local (from Supabase Dashboard → Project Settings → API Keys).'
+        }, { status: 403 })
+      }
       return Response.json({ error: error.message }, { status: 500 })
     }
 
@@ -108,14 +114,19 @@ export async function DELETE(request: NextRequest) {
     const supabase = serverClient()
     if (!supabase) {
       return Response.json(
-        { success: true, mocked: true, message: 'Removed from local view.' },
-        { status: 200 }
+        { error: 'Supabase is not configured. Please add your credentials in .env.local.' },
+        { status: 503 }
       )
     }
     const { error } = await supabase.from('achievements').delete().eq('id', id)
 
     if (error) {
       console.error('[DELETE /api/achievements] Supabase error:', error.message)
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+        return Response.json({
+          error: 'Supabase Row-Level Security blocked this deletion. Please add your SUPABASE_SERVICE_ROLE_KEY to .env.local (from Supabase Dashboard → Project Settings → API Keys).'
+        }, { status: 403 })
+      }
       return Response.json({ error: error.message }, { status: 500 })
     }
 
