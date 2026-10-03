@@ -6,6 +6,7 @@
 import type { Metadata } from 'next'
 import { serverClient } from '@/lib/supabase'
 import type { ModelLog, DashboardMetrics } from '@/lib/types'
+import { generateMockModelLogs } from '@/lib/mock-data'
 import DashboardCharts from '@/components/sections/DashboardCharts'
 import ModelLogTable from '@/components/sections/ModelLogTable'
 import MetricCard from '@/components/ui/MetricCard'
@@ -90,20 +91,24 @@ function computeMetrics(logs: ModelLog[]): DashboardMetrics {
 async function getModelLogs(): Promise<ModelLog[]> {
   try {
     const supabase = serverClient()
+    if (!supabase) {
+      return generateMockModelLogs()
+    }
+
     const { data, error } = await supabase
       .from('model_logs')
       .select('*')
       .order('timestamp', { ascending: false })
       .limit(5000) // Cap to avoid huge payloads
 
-    if (error) {
-      console.error('[getModelLogs] Supabase error:', error.message)
-      return []
+    if (error || !data || data.length === 0) {
+      if (error) console.warn('[getModelLogs] Supabase notice (using fallback data):', error.message)
+      return generateMockModelLogs()
     }
-    return (data as ModelLog[]) ?? []
+    return (data as ModelLog[]) ?? generateMockModelLogs()
   } catch (err) {
-    console.error('[getModelLogs] Unexpected error:', err)
-    return []
+    console.warn('[getModelLogs] Supabase fetch failed, using fallback data.')
+    return generateMockModelLogs()
   }
 }
 

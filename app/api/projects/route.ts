@@ -31,6 +31,12 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = serverClient()
+    if (!supabase) {
+      return Response.json(
+        { error: 'Supabase is not configured. Please add your credentials in .env.local.' },
+        { status: 503 }
+      )
+    }
     const { data, error } = await supabase
       .from('projects')
       .insert([{
@@ -71,6 +77,12 @@ export async function DELETE(request: NextRequest) {
     }
 
     const supabase = serverClient()
+    if (!supabase) {
+      return Response.json(
+        { error: 'Supabase is not configured. Please add your credentials in .env.local.' },
+        { status: 503 }
+      )
+    }
     const { error } = await supabase.from('projects').delete().eq('id', id)
 
     if (error) {

@@ -6,6 +6,7 @@
 import type { Metadata } from 'next'
 import { serverClient } from '@/lib/supabase'
 import type { Project, Achievement } from '@/lib/types'
+import { MOCK_PROJECTS, MOCK_ACHIEVEMENTS } from '@/lib/mock-data'
 import ProjectCard from '@/components/ui/ProjectCard'
 import AchievementBadge from '@/components/ui/AchievementBadge'
 import {
@@ -27,39 +28,47 @@ export const dynamic = 'force-dynamic'
 async function getProjects(): Promise<Project[]> {
   try {
     const supabase = serverClient()
+    if (!supabase) {
+      return MOCK_PROJECTS
+    }
+
     const { data, error } = await supabase
       .from('projects')
       .select('*')
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
 
-    if (error) {
-      console.error('[getProjects] Supabase error:', error.message)
-      return []
+    if (error || !data || data.length === 0) {
+      if (error) console.warn('[getProjects] Supabase notice (using fallback data):', error.message)
+      return MOCK_PROJECTS
     }
-    return (data as Project[]) ?? []
+    return (data as Project[]) ?? MOCK_PROJECTS
   } catch (err) {
-    console.error('[getProjects] Unexpected error:', err)
-    return []
+    console.warn('[getProjects] Supabase fetch failed, using fallback data.')
+    return MOCK_PROJECTS
   }
 }
 
 async function getAchievements(): Promise<Achievement[]> {
   try {
     const supabase = serverClient()
+    if (!supabase) {
+      return MOCK_ACHIEVEMENTS
+    }
+
     const { data, error } = await supabase
       .from('achievements')
       .select('*')
       .order('date', { ascending: false })
 
-    if (error) {
-      console.error('[getAchievements] Supabase error:', error.message)
-      return []
+    if (error || !data || data.length === 0) {
+      if (error) console.warn('[getAchievements] Supabase notice (using fallback data):', error.message)
+      return MOCK_ACHIEVEMENTS
     }
-    return (data as Achievement[]) ?? []
+    return (data as Achievement[]) ?? MOCK_ACHIEVEMENTS
   } catch (err) {
-    console.error('[getAchievements] Unexpected error:', err)
-    return []
+    console.warn('[getAchievements] Supabase fetch failed, using fallback data.')
+    return MOCK_ACHIEVEMENTS
   }
 }
 

@@ -35,6 +35,12 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = serverClient()
+    if (!supabase) {
+      return Response.json(
+        { error: 'Supabase is not configured. Please add your credentials in .env.local.' },
+        { status: 503 }
+      )
+    }
     const { data, error } = await supabase
       .from('model_logs')
       .insert([{
