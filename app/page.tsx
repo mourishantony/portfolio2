@@ -503,26 +503,7 @@ function EmptyProjectsState() {
         href="https://github.com/mourishantony"
         target="_blank"
         rel="noopener noreferrer"
-        style={{
-          display: 'inline-flex', alignItems: 'center', gap: '8px',
-          padding: '10px 20px',
-          borderRadius: '8px',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          color: '#e2e8f0',
-          textDecoration: 'none',
-          fontSize: '13px',
-          fontWeight: 600,
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-        }}
+        className="btn-github-empty"
       >
         <GithubIcon size={15} />
         View GitHub Repositories
