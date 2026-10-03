@@ -108,7 +108,8 @@ export default async function HomePage() {
           justifyContent: 'center',
           position: 'relative',
           overflow: 'hidden',
-          paddingTop: '80px',
+          paddingTop: '96px',
+          paddingBottom: '48px',
         }}
       >
         {/* Dot grid background */}
@@ -251,60 +252,43 @@ export default async function HomePage() {
 
           {/* CTA Buttons — client component for interactivity */}
           <HeroCTA />
-        </div>
 
-        {/* Stats bar */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '48px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            gap: '0',
-            animation: 'fade-up 0.6s ease-out 0.5s forwards',
-            opacity: 0,
-          }}
-        >
-          {STATS.map(({ value, label }, i) => (
-            <div
-              key={label}
-              style={{
-                padding: '12px 32px',
-                textAlign: 'center',
-                borderRight: i < STATS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: '22px',
-                  fontWeight: 700,
-                  color: '#6366f1',
-                  lineHeight: 1,
-                }}
-              >
-                {value}
+          {/* Stats bar — in natural flow below CTA buttons */}
+          <div className="hero-stats-container">
+            {STATS.map(({ value, label }) => (
+              <div key={label} className="hero-stat-item">
+                <div
+                  style={{
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '22px',
+                    fontWeight: 700,
+                    color: '#6366f1',
+                    lineHeight: 1,
+                  }}
+                >
+                  {value}
+                </div>
+                <div style={{ color: '#64748b', fontSize: '12px', marginTop: '6px', whiteSpace: 'nowrap' }}>
+                  {label}
+                </div>
               </div>
-              <div style={{ color: '#475569', fontSize: '12px', marginTop: '4px' }}>
-                {label}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Scroll indicator */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '16px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            animation: 'float 2s ease-in-out infinite',
-            color: '#334155',
-          }}
-        >
-          <ChevronDown size={20} />
+          {/* Scroll indicator */}
+          <div
+            style={{
+              marginTop: '32px',
+              animation: 'float 2s ease-in-out infinite',
+              color: '#334155',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <a href="#projects" aria-label="Scroll to projects" style={{ color: 'inherit' }}>
+              <ChevronDown size={20} />
+            </a>
+          </div>
         </div>
       </section>
 
