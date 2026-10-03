@@ -14,6 +14,7 @@ import {
   GitBranch, Server, Database, Layers, Bot, Sparkles,
 } from 'lucide-react'
 import HeroCTA from '@/components/sections/HeroCTA'
+import ProfileSection from '@/components/sections/ProfileSection'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -153,33 +154,73 @@ export default async function HomePage() {
             textAlign: 'center',
           }}
         >
-          {/* Status pill */}
+          {/* Profile & Status pill */}
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '6px 16px',
-              borderRadius: '20px',
-              background: 'rgba(16,185,129,0.08)',
-              border: '1px solid rgba(16,185,129,0.2)',
+              gap: '12px',
+              padding: '6px 16px 6px 8px',
+              borderRadius: '24px',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
               marginBottom: '32px',
               animation: 'fade-up 0.5s ease-out forwards',
             }}
           >
-            <span
+            <a
+              href="#about"
               style={{
-                width: 7, height: 7,
-                borderRadius: '50%',
-                background: '#10b981',
-                boxShadow: '0 0 8px rgba(16,185,129,0.8)',
-                animation: 'glow-pulse 2s ease-in-out infinite',
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                textDecoration: 'none',
               }}
-            />
-            <span style={{ color: '#10b981', fontSize: '13px', fontWeight: 600, fontFamily: 'JetBrains Mono, monospace' }}>
-              Available for opportunities
-            </span>
+            >
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1.5px solid rgba(99,102,241,0.6)',
+                  boxShadow: '0 0 10px rgba(99,102,241,0.5)',
+                  flexShrink: 0,
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/profile.jpg"
+                  alt="Mourish Antony C"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </div>
+              <span style={{ color: '#e2e8f0', fontSize: '13px', fontWeight: 600 }}>
+                Mourish Antony C
+              </span>
+            </a>
+
+            <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.12)' }} />
+
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <span
+                style={{
+                  width: 7, height: 7,
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  boxShadow: '0 0 8px rgba(16,185,129,0.8)',
+                  animation: 'glow-pulse 2s ease-in-out infinite',
+                  display: 'inline-block',
+                }}
+              />
+              <span style={{ color: '#10b981', fontSize: '12px', fontWeight: 600, fontFamily: 'JetBrains Mono, monospace' }}>
+                Available for roles
+              </span>
+            </div>
           </div>
 
           {/* Main heading */}
@@ -285,12 +326,15 @@ export default async function HomePage() {
               justifyContent: 'center',
             }}
           >
-            <a href="#projects" aria-label="Scroll to projects" style={{ color: 'inherit' }}>
+            <a href="#about" aria-label="Scroll to about" style={{ color: 'inherit' }}>
               <ChevronDown size={20} />
             </a>
           </div>
         </div>
       </section>
+
+      {/* ═══════════════════════════ ABOUT / PROFILE ══════════════════════ */}
+      <ProfileSection />
 
       {/* ═══════════════════════════ PROJECTS ═══════════════════════════ */}
       <section

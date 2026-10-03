@@ -1,7 +1,8 @@
 'use client'
 // components/Footer.tsx
 import Link from 'next/link'
-import { Brain, GitFork, Link2, Mail, Share2 } from 'lucide-react'
+import { Brain, Mail } from 'lucide-react'
+import { GithubIcon, LinkedinIcon } from '@/components/ui/SocialIcons'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -38,6 +39,7 @@ export default function Footer() {
             <h3 style={{ color: '#e2e8f0', fontSize: '13px', fontWeight: 600, marginBottom: '12px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Navigation</h3>
             {[
               { label: 'Home', href: '/' },
+              { label: 'About', href: '/#about' },
               { label: 'Projects', href: '/#projects' },
               { label: 'MLOps Dashboard', href: '/dashboard' },
               { label: 'Achievements', href: '/#achievements' },
@@ -62,10 +64,9 @@ export default function Footer() {
             <h3 style={{ color: '#e2e8f0', fontSize: '13px', fontWeight: 600, marginBottom: '12px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Connect</h3>
             <div style={{ display: 'flex', gap: '12px' }}>
               {[
-                              { icon: GitFork, href: 'https://github.com', label: 'GitHub' },
-                { icon: Link2, href: 'https://linkedin.com', label: 'LinkedIn' },
-                { icon: Share2, href: 'https://twitter.com', label: 'Twitter' },
-                { icon: Mail, href: 'mailto:mourish@example.com', label: 'Email' },
+                { icon: GithubIcon, href: 'https://github.com/mourishantony', label: 'GitHub' },
+                { icon: LinkedinIcon, href: 'https://www.linkedin.com/in/mourishantonyc/', label: 'LinkedIn' },
+                { icon: Mail, href: 'mailto:mourishantonyc@gmail.com', label: 'Email' },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
