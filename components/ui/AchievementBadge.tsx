@@ -12,15 +12,25 @@ const BADGE_CONFIG = {
 
 interface AchievementBadgeProps {
   achievement: Achievement
-  index: number
+  index?: number
+  animateIn?: boolean
+  className?: string
+  style?: React.CSSProperties
 }
 
-export default function AchievementBadge({ achievement, index }: AchievementBadgeProps) {
+export default function AchievementBadge({
+  achievement,
+  index = 0,
+  animateIn = true,
+  className = '',
+  style = {},
+}: AchievementBadgeProps) {
   const config = BADGE_CONFIG[achievement.badge_type]
   const Icon = config.icon
 
   return (
     <div
+      className={className}
       style={{
         padding: '20px',
         borderRadius: '12px',
@@ -29,10 +39,19 @@ export default function AchievementBadge({ achievement, index }: AchievementBadg
         display: 'flex',
         gap: '16px',
         alignItems: 'flex-start',
-        animation: 'fade-up 0.5s ease-out forwards',
-        animationDelay: `${index * 0.1}s`,
-        opacity: 0,
+        ...(animateIn
+          ? {
+              animation: 'fade-up 0.5s ease-out forwards',
+              animationDelay: `${index * 0.1}s`,
+              opacity: 0,
+            }
+          : {
+              opacity: 1,
+            }),
         transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+        boxSizing: 'border-box',
+        height: '100%',
+        ...style,
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = config.color + '60'
@@ -67,7 +86,17 @@ export default function AchievementBadge({ achievement, index }: AchievementBadg
           {achievement.title}
         </h4>
         {achievement.description && (
-          <p style={{ color: '#64748b', fontSize: '13px', lineHeight: 1.6 }}>
+          <p
+            style={{
+              color: '#64748b',
+              fontSize: '13px',
+              lineHeight: 1.6,
+              display: '-webkit-box',
+              WebkitLineClamp: 5,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
             {achievement.description}
           </p>
         )}

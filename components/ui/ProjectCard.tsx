@@ -1,6 +1,5 @@
 'use client'
 // components/ui/ProjectCard.tsx
-import Link from 'next/link'
 import { GitFork, ExternalLink, Cpu, Eye, Bot, Zap, Tag } from 'lucide-react'
 import type { Project } from '@/lib/types'
 
@@ -14,27 +13,45 @@ const CATEGORY_CONFIG: Record<string, { label: string; color: string; icon: Reac
 
 interface ProjectCardProps {
   project: Project
-  index: number
+  index?: number
+  animateIn?: boolean
+  className?: string
+  style?: React.CSSProperties
 }
 
-export default function ProjectCard({ project, index }: ProjectCardProps) {
+export default function ProjectCard({
+  project,
+  index = 0,
+  animateIn = true,
+  className = '',
+  style = {},
+}: ProjectCardProps) {
   const catConfig = CATEGORY_CONFIG[project.category] ?? CATEGORY_CONFIG.other
   const CatIcon = catConfig.icon
 
   return (
     <article
-      className="glass-card"
+      className={`glass-card ${className}`}
       style={{
         borderRadius: '16px',
         padding: '24px',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
-        animation: 'fade-up 0.5s ease-out forwards',
-        animationDelay: `${index * 0.08}s`,
-        opacity: 0,
+        ...(animateIn
+          ? {
+              animation: 'fade-up 0.5s ease-out forwards',
+              animationDelay: `${index * 0.08}s`,
+              opacity: 0,
+            }
+          : {
+              opacity: 1,
+            }),
         position: 'relative',
         overflow: 'hidden',
+        height: '100%',
+        boxSizing: 'border-box',
+        ...style,
       }}
     >
       {/* Accent glow top */}
@@ -86,7 +103,17 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         <h3 style={{ color: '#e2e8f0', fontSize: '17px', fontWeight: 700, marginBottom: '8px', lineHeight: 1.3 }}>
           {project.title}
         </h3>
-        <p style={{ color: '#64748b', fontSize: '13px', lineHeight: 1.7 }}>
+        <p
+          style={{
+            color: '#64748b',
+            fontSize: '13px',
+            lineHeight: 1.7,
+            display: '-webkit-box',
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
           {project.description}
         </p>
       </div>

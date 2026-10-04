@@ -7,15 +7,14 @@ import type { Metadata } from 'next'
 import { serverClient } from '@/lib/supabase'
 import type { Project, Achievement } from '@/lib/types'
 import { MOCK_PROJECTS, MOCK_ACHIEVEMENTS } from '@/lib/mock-data'
-import ProjectCard from '@/components/ui/ProjectCard'
-import AchievementBadge from '@/components/ui/AchievementBadge'
 import {
-  Brain, Cpu, Eye, Zap, ChevronDown,
-  GitBranch, Server, Database, Layers, Bot, Sparkles,
+  Cpu, Eye, ChevronDown,
+  Server, Layers, Bot, Sparkles,
 } from 'lucide-react'
 import HeroCTA from '@/components/sections/HeroCTA'
 import ProfileSection from '@/components/sections/ProfileSection'
-import { GithubIcon } from '@/components/ui/SocialIcons'
+import ProjectsShowcase from '@/components/sections/ProjectsShowcase'
+import AchievementsShowcase from '@/components/sections/AchievementsShowcase'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -45,7 +44,7 @@ async function getProjects(): Promise<Project[]> {
       return MOCK_PROJECTS
     }
     return (data as Project[]) ?? []
-  } catch (err) {
+  } catch {
     console.warn('[getProjects] Supabase fetch failed, using fallback data.')
     return MOCK_PROJECTS
   }
@@ -68,7 +67,7 @@ async function getAchievements(): Promise<Achievement[]> {
       return MOCK_ACHIEVEMENTS
     }
     return (data as Achievement[]) ?? []
-  } catch (err) {
+  } catch {
     console.warn('[getAchievements] Supabase fetch failed, using fallback data.')
     return MOCK_ACHIEVEMENTS
   }
@@ -338,176 +337,11 @@ export default async function HomePage() {
       <ProfileSection />
 
       {/* ═══════════════════════════ PROJECTS ═══════════════════════════ */}
-      <section
-        id="projects"
-        style={{ padding: 'clamp(64px, 10vw, 120px) 24px', maxWidth: '1200px', margin: '0 auto' }}
-      >
-        {/* Section header */}
-        <div style={{ marginBottom: '56px', textAlign: 'center' }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '6px 14px',
-              borderRadius: '20px',
-              background: 'rgba(99,102,241,0.1)',
-              border: '1px solid rgba(99,102,241,0.2)',
-              marginBottom: '16px',
-            }}
-          >
-            <GitBranch size={13} color="#6366f1" />
-            <span
-              style={{
-                color: '#6366f1',
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                fontFamily: 'JetBrains Mono, monospace',
-              }}
-            >
-              Production Systems
-            </span>
-          </div>
-          <h2
-            style={{
-              fontSize: 'clamp(28px, 5vw, 44px)',
-              fontWeight: 800,
-              color: '#f1f5f9',
-              letterSpacing: '-0.03em',
-              lineHeight: 1.1,
-            }}
-          >
-            Built for Scale
-          </h2>
-          <p style={{ color: '#64748b', fontSize: '15px', marginTop: '12px', maxWidth: '540px', margin: '12px auto 0' }}>
-            End-to-end ML systems from research prototype to production — handling millions of inferences.
-          </p>
-        </div>
-
-        {/* Projects Grid or Empty State */}
-        {projects.length === 0 ? (
-          <EmptyProjectsState />
-        ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
-              gap: '24px',
-            }}
-          >
-            {projects.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
-            ))}
-          </div>
-        )}
-      </section>
+      <ProjectsShowcase projects={projects} />
 
       {/* ═══════════════════════════ ACHIEVEMENTS ════════════════════════ */}
-      {(achievements.length > 0) && (
-        <section
-          id="achievements"
-          style={{ padding: 'clamp(48px, 8vw, 96px) 24px', background: 'rgba(13,13,20,0.5)' }}
-        >
-          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-            <div style={{ marginBottom: '48px', textAlign: 'center' }}>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '6px 14px',
-                  borderRadius: '20px',
-                  background: 'rgba(245,158,11,0.1)',
-                  border: '1px solid rgba(245,158,11,0.2)',
-                  marginBottom: '16px',
-                }}
-              >
-                <Database size={13} color="#f59e0b" />
-                <span
-                  style={{
-                    color: '#f59e0b',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    fontFamily: 'JetBrains Mono, monospace',
-                  }}
-                >
-                  Recognition
-                </span>
-              </div>
-              <h2
-                style={{
-                  fontSize: 'clamp(26px, 4.5vw, 40px)',
-                  fontWeight: 800,
-                  color: '#f1f5f9',
-                  letterSpacing: '-0.03em',
-                }}
-              >
-                Achievements & Awards
-              </h2>
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: '16px',
-              }}
-            >
-              {achievements.map((ach, i) => (
-                <AchievementBadge key={ach.id} achievement={ach} index={i} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <AchievementsShowcase achievements={achievements} />
     </>
   )
 }
 
-// ── Empty state shown when DB has no projects yet ─────────────────────────
-function EmptyProjectsState() {
-  return (
-    <div
-      style={{
-        textAlign: 'center',
-        padding: '64px 24px',
-        border: '1px dashed rgba(99,102,241,0.2)',
-        borderRadius: '20px',
-        background: 'rgba(99,102,241,0.03)',
-        maxWidth: '520px',
-        margin: '0 auto',
-      }}
-    >
-      <div
-        style={{
-          width: 56, height: 56,
-          borderRadius: '14px',
-          background: 'rgba(99,102,241,0.1)',
-          border: '1px solid rgba(99,102,241,0.2)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto 20px',
-        }}
-      >
-        <Brain size={26} color="#6366f1" />
-      </div>
-      <h3 style={{ color: '#e2e8f0', fontSize: '18px', fontWeight: 700, marginBottom: '8px' }}>
-        Projects Updating Soon
-      </h3>
-      <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '380px', margin: '0 auto 20px', lineHeight: 1.6 }}>
-        Production ML systems and research projects are currently being prepared. In the meantime, explore my repositories on GitHub.
-      </p>
-      <a
-        href="https://github.com/mourishantony"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-github-empty"
-      >
-        <GithubIcon size={15} />
-        View GitHub Repositories
-      </a>
-    </div>
-  )
-}

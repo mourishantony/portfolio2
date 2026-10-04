@@ -229,3 +229,214 @@ body {
   }
 }
 
+/* ── Profile Section Responsive Styling ──────────────────────────────────── */
+.profile-card-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.profile-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  padding: 24px 18px;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .profile-card-grid {
+    padding: 32px 24px;
+    gap: 36px;
+  }
+}
+
+@media (min-width: 960px) {
+  .profile-card-grid {
+    grid-template-columns: 320px 1fr;
+    gap: 48px;
+    padding: 44px;
+  }
+}
+
+.profile-social-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+  max-width: 360px;
+}
+
+.profile-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex: 1 1 95px;
+  min-width: 90px;
+}
+
+.profile-pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .profile-pillars-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* ── Infinite Marquee & Slider ─────────────────────────────────────────── */
+.marquee-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 12px 0 24px;
+  /* Gradient masks for smooth edge fade */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 32px,
+    black calc(100% - 32px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 32px,
+    black calc(100% - 32px),
+    transparent 100%
+  );
+}
+
+@media (min-width: 768px) {
+  .marquee-wrapper {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 80px,
+      black calc(100% - 80px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 80px,
+      black calc(100% - 80px),
+      transparent 100%
+    );
+  }
+}
+
+.marquee-content {
+  display: flex;
+  width: max-content;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+  align-items: stretch;
+  will-change: transform;
+}
+
+.marquee-track-left {
+  animation: marquee-scroll-left var(--marquee-speed, 35s) linear infinite;
+}
+
+.marquee-track-right {
+  animation: marquee-scroll-right var(--marquee-speed, 35s) linear infinite;
+}
+
+/* Pause on wrapper hover or touch */
+.marquee-wrapper:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-paused .marquee-track {
+  animation-play-state: paused !important;
+}
+
+@keyframes marquee-scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 20px));
+  }
+}
+
+@keyframes marquee-scroll-right {
+  from {
+    transform: translateX(calc(-100% - 20px));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Marquee card sizing */
+.marquee-project-card {
+  width: 360px;
+  max-width: 85vw;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.marquee-achievement-card {
+  width: 330px;
+  max-width: 85vw;
+  flex: 0 0 auto;
+  display: flex;
+}
+
+/* ── Interactive Slider Styles ─────────────────────────────────────────── */
+.slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 8px 0 16px;
+}
+
+.slider-track {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 12px 16px;
+  scrollbar-width: none;
+}
+
+.slider-track::-webkit-scrollbar {
+  display: none;
+}
+
+.slider-item {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+
+
