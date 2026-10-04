@@ -5,7 +5,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { useState } from 'react'
 import { User, Mail, MapPin, Terminal, CheckCircle2, ArrowUpRight } from 'lucide-react'
-import { GithubIcon, LinkedinIcon } from '@/components/ui/SocialIcons'
+import {
+  GithubIcon, LinkedinIcon, XIcon, InstagramIcon, FacebookIcon
+} from '@/components/ui/SocialIcons'
 
 export default function ProfileSection() {
   const [imgError, setImgError] = useState(false)
@@ -195,8 +197,16 @@ export default function ProfileSection() {
             </div>
 
             {/* Name & Role */}
-            <h3 style={{ fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: 800, color: '#f1f5f9', marginBottom: '4px' }}>
-              Mourish Antony C
+            <h3
+              style={{
+                fontSize: 'clamp(20px, 4vw, 24px)',
+                fontWeight: 800,
+                color: '#f1f5f9',
+                marginBottom: '4px',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Mourish Antony&nbsp;C
             </h3>
             <p style={{ color: '#818cf8', fontSize: '13px', fontWeight: 600, fontFamily: 'JetBrains Mono, monospace', marginBottom: '8px' }}>
               Advanced Machine Learning Engineer
@@ -220,9 +230,9 @@ export default function ProfileSection() {
                   color: '#e2e8f0',
                 }}
               >
-                <GithubIcon size={16} />
+                <GithubIcon size={15} />
                 <span>GitHub</span>
-                <ArrowUpRight size={12} style={{ opacity: 0.6 }} />
+                <ArrowUpRight size={11} style={{ opacity: 0.6 }} />
               </a>
 
               <a
@@ -237,9 +247,60 @@ export default function ProfileSection() {
                   color: '#60a5fa',
                 }}
               >
-                <LinkedinIcon size={16} />
+                <LinkedinIcon size={15} />
                 <span>LinkedIn</span>
-                <ArrowUpRight size={12} style={{ opacity: 0.6 }} />
+                <ArrowUpRight size={11} style={{ opacity: 0.6 }} />
+              </a>
+
+              <a
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                id="profile-x-link"
+                className="profile-social-btn"
+                style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#e2e8f0',
+                }}
+              >
+                <XIcon size={14} />
+                <span>X</span>
+                <ArrowUpRight size={11} style={{ opacity: 0.6 }} />
+              </a>
+
+              <a
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                id="profile-instagram-link"
+                className="profile-social-btn"
+                style={{
+                  background: 'rgba(225,48,108,0.1)',
+                  border: '1px solid rgba(225,48,108,0.25)',
+                  color: '#f472b6',
+                }}
+              >
+                <InstagramIcon size={15} />
+                <span>Instagram</span>
+                <ArrowUpRight size={11} style={{ opacity: 0.6 }} />
+              </a>
+
+              <a
+                href="https://facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                id="profile-facebook-link"
+                className="profile-social-btn"
+                style={{
+                  background: 'rgba(24,119,242,0.1)',
+                  border: '1px solid rgba(24,119,242,0.25)',
+                  color: '#93c5fd',
+                }}
+              >
+                <FacebookIcon size={15} />
+                <span>Facebook</span>
+                <ArrowUpRight size={11} style={{ opacity: 0.6 }} />
               </a>
 
               <a
@@ -252,7 +313,7 @@ export default function ProfileSection() {
                   color: '#a5b4fc',
                 }}
               >
-                <Mail size={15} />
+                <Mail size={14} />
                 <span>Email</span>
               </a>
             </div>

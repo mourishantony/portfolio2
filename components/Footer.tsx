@@ -2,7 +2,9 @@
 // components/Footer.tsx
 import Link from 'next/link'
 import { Brain, Mail } from 'lucide-react'
-import { GithubIcon, LinkedinIcon } from '@/components/ui/SocialIcons'
+import {
+  GithubIcon, LinkedinIcon, XIcon, InstagramIcon, FacebookIcon
+} from '@/components/ui/SocialIcons'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -62,10 +64,13 @@ export default function Footer() {
           {/* Social */}
           <div>
             <h3 style={{ color: '#e2e8f0', fontSize: '13px', fontWeight: 600, marginBottom: '12px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Connect</h3>
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {[
                 { icon: GithubIcon, href: 'https://github.com/mourishantony', label: 'GitHub' },
                 { icon: LinkedinIcon, href: 'https://www.linkedin.com/in/mourishantonyc/', label: 'LinkedIn' },
+                { icon: XIcon, href: 'https://x.com/', label: 'X (Twitter)' },
+                { icon: InstagramIcon, href: 'https://instagram.com/', label: 'Instagram' },
+                { icon: FacebookIcon, href: 'https://facebook.com/', label: 'Facebook' },
                 { icon: Mail, href: 'mailto:mourishantonyc@gmail.com', label: 'Email' },
               ].map(({ icon: Icon, href, label }) => (
                 <a

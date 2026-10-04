@@ -3,7 +3,9 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Menu, X, Brain, BarChart3, Mail } from 'lucide-react'
-import { GithubIcon, LinkedinIcon } from '@/components/ui/SocialIcons'
+import {
+  GithubIcon, LinkedinIcon, XIcon, InstagramIcon, FacebookIcon
+} from '@/components/ui/SocialIcons'
 
 const navLinks = [
   { label: 'About', href: '/#about' },
@@ -100,6 +102,9 @@ export default function Navbar() {
           {[
             { icon: GithubIcon, href: 'https://github.com/mourishantony', label: 'GitHub' },
             { icon: LinkedinIcon, href: 'https://www.linkedin.com/in/mourishantonyc/', label: 'LinkedIn' },
+            { icon: XIcon, href: 'https://x.com/', label: 'X (Twitter)' },
+            { icon: InstagramIcon, href: 'https://instagram.com/', label: 'Instagram' },
+            { icon: FacebookIcon, href: 'https://facebook.com/', label: 'Facebook' },
             { icon: Mail, href: 'mailto:mourishantonyc@gmail.com', label: 'Email' },
           ].map(({ icon: Icon, href, label }) => (
             <a
@@ -206,17 +211,26 @@ export default function Navbar() {
 
           {/* Mobile social links */}
           <div style={{
-            display: 'flex', alignItems: 'center', gap: '20px',
+            display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap',
             marginTop: '20px', paddingTop: '16px',
             borderTop: '1px solid rgba(255,255,255,0.06)',
           }}>
-            <a href="https://github.com/mourishantony" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', textDecoration: 'none' }}>
+            <a href="https://github.com/mourishantony" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
               <GithubIcon size={16} /> GitHub
             </a>
-            <a href="https://www.linkedin.com/in/mourishantonyc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', textDecoration: 'none' }}>
+            <a href="https://www.linkedin.com/in/mourishantonyc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
               <LinkedinIcon size={16} /> LinkedIn
             </a>
-            <a href="mailto:mourishantonyc@gmail.com" aria-label="Email" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', textDecoration: 'none' }}>
+            <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
+              <XIcon size={15} /> X
+            </a>
+            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
+              <InstagramIcon size={16} /> Instagram
+            </a>
+            <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
+              <FacebookIcon size={16} /> Facebook
+            </a>
+            <a href="mailto:mourishantonyc@gmail.com" aria-label="Email" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
               <Mail size={16} /> Email
             </a>
           </div>

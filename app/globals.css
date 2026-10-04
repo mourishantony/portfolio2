@@ -229,6 +229,190 @@ body {
   }
 }
 
+/* ── Front-View Hero with Profile Bust Display ─────────────────────────── */
+.hero-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 36px;
+  align-items: center;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 1024px) {
+  .hero-layout-grid {
+    grid-template-columns: 1.15fr 1fr 0.85fr;
+    gap: 40px;
+    align-items: center;
+    text-align: left;
+  }
+}
+
+.hero-full-name {
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.hero-bust-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.hero-bust-card {
+  position: relative;
+  width: min(340px, 86vw);
+  height: 440px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1.5px solid rgba(99, 102, 241, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(99, 102, 241, 0.2);
+  background: linear-gradient(180deg, #13131f 0%, #0d0d14 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .hero-bust-card {
+    width: 380px;
+    height: 500px;
+  }
+}
+
+.hero-bust-aura {
+  position: absolute;
+  inset: -14px;
+  border-radius: 36px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.2) 40%, transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.hero-bust-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 12%;
+  display: block;
+}
+
+.hero-bust-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    #050508 0%,
+    rgba(5, 5, 8, 0.6) 20%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.hero-floating-badge-top {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(13, 13, 20, 0.88);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.hero-floating-badge-bottom {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(13, 13, 20, 0.88);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.hero-follow-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.hero-follow-heading {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.hero-social-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hero-social-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.hero-social-icon-btn:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+.hero-quick-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #818cf8;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.2s ease;
+  margin-top: 6px;
+}
+
+.hero-quick-link:hover {
+  color: #c7d2fe;
+  transform: translateX(4px);
+}
+
 /* ── Profile Section Responsive Styling ──────────────────────────────────── */
 .profile-card-container {
   width: 100%;
