@@ -345,6 +345,72 @@ body {
   }
 }
 
+/* ── Interactive Draggable Infinite Marquee ────────────────────────────── */
+.draggable-marquee-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 12px 0 24px;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 32px,
+    black calc(100% - 32px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 32px,
+    black calc(100% - 32px),
+    transparent 100%
+  );
+}
+
+@media (min-width: 768px) {
+  .draggable-marquee-wrapper {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 80px,
+      black calc(100% - 80px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 80px,
+      black calc(100% - 80px),
+      transparent 100%
+    );
+  }
+}
+
+.draggable-marquee-container {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  user-select: none;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.draggable-marquee-container::-webkit-scrollbar {
+  display: none;
+}
+
+.draggable-marquee-container.is-dragging {
+  cursor: grabbing;
+}
+
+.draggable-marquee-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  align-items: stretch;
+}
+
 .marquee-content {
   display: flex;
   width: max-content;

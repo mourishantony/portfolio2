@@ -17,6 +17,7 @@ interface ProjectCardProps {
   animateIn?: boolean
   className?: string
   style?: React.CSSProperties
+  onClick?: () => void
 }
 
 export default function ProjectCard({
@@ -25,6 +26,7 @@ export default function ProjectCard({
   animateIn = true,
   className = '',
   style = {},
+  onClick,
 }: ProjectCardProps) {
   const catConfig = CATEGORY_CONFIG[project.category] ?? CATEGORY_CONFIG.other
   const CatIcon = catConfig.icon
@@ -32,12 +34,17 @@ export default function ProjectCard({
   return (
     <article
       className={`glass-card ${className}`}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
       style={{
         borderRadius: '16px',
         padding: '24px',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
+        cursor: onClick ? 'pointer' : 'default',
         ...(animateIn
           ? {
               animation: 'fade-up 0.5s ease-out forwards',
@@ -157,69 +164,90 @@ export default function ProjectCard({
         ))}
       </div>
 
-      {/* Links */}
-      <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
-        {project.github_url && (
-          <a
-            href={project.github_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            id={`project-github-${project.id}`}
+      {/* Links & Details Prompt */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginTop: 'auto', paddingTop: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          {project.github_url && (
+            <a
+              href={project.github_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              id={`project-github-${project.id}`}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '5px',
+                padding: '7px 12px',
+                borderRadius: '8px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                color: '#94a3b8',
+                textDecoration: 'none',
+                fontSize: '12px',
+                fontWeight: 600,
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#e2e8f0'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#94a3b8'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+              }}
+            >
+              <GitFork size={13} />
+              Code
+            </a>
+          )}
+          {project.live_demo_url && (
+            <a
+              href={project.live_demo_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              id={`project-demo-${project.id}`}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '5px',
+                padding: '7px 12px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2))',
+                border: '1px solid rgba(99,102,241,0.3)',
+                color: '#818cf8',
+                textDecoration: 'none',
+                fontSize: '12px',
+                fontWeight: 600,
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#a5b4fc'
+                e.currentTarget.style.borderColor = 'rgba(99,102,241,0.6)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#818cf8'
+                e.currentTarget.style.borderColor = 'rgba(99,102,241,0.3)'
+              }}
+            >
+              <ExternalLink size={13} />
+              Demo
+            </a>
+          )}
+        </div>
+
+        {onClick && (
+          <span
             style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              padding: '8px 14px',
-              borderRadius: '8px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#94a3b8',
-              textDecoration: 'none',
-              fontSize: '12px',
-              fontWeight: 600,
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#e2e8f0'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#94a3b8'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
-            }}
-          >
-            <GitFork size={13} />
-            Code
-          </a>
-        )}
-        {project.live_demo_url && (
-          <a
-            href={project.live_demo_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            id={`project-demo-${project.id}`}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              padding: '8px 14px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2))',
-              border: '1px solid rgba(99,102,241,0.3)',
+              fontSize: '11px',
               color: '#818cf8',
-              textDecoration: 'none',
-              fontSize: '12px',
               fontWeight: 600,
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#a5b4fc'
-              e.currentTarget.style.borderColor = 'rgba(99,102,241,0.6)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#818cf8'
-              e.currentTarget.style.borderColor = 'rgba(99,102,241,0.3)'
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              opacity: 0.85,
+              fontFamily: 'JetBrains Mono, monospace',
             }}
           >
-            <ExternalLink size={13} />
-            Live Demo
-          </a>
+            Details →
+          </span>
         )}
       </div>
     </article>

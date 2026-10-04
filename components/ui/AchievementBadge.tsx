@@ -16,6 +16,7 @@ interface AchievementBadgeProps {
   animateIn?: boolean
   className?: string
   style?: React.CSSProperties
+  onClick?: () => void
 }
 
 export default function AchievementBadge({
@@ -24,6 +25,7 @@ export default function AchievementBadge({
   animateIn = true,
   className = '',
   style = {},
+  onClick,
 }: AchievementBadgeProps) {
   const config = BADGE_CONFIG[achievement.badge_type]
   const Icon = config.icon
@@ -31,6 +33,10 @@ export default function AchievementBadge({
   return (
     <div
       className={className}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
       style={{
         padding: '20px',
         borderRadius: '12px',
@@ -39,6 +45,7 @@ export default function AchievementBadge({
         display: 'flex',
         gap: '16px',
         alignItems: 'flex-start',
+        cursor: onClick ? 'pointer' : 'default',
         ...(animateIn
           ? {
               animation: 'fade-up 0.5s ease-out forwards',
@@ -95,10 +102,30 @@ export default function AchievementBadge({
               WebkitLineClamp: 5,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              marginBottom: onClick ? '8px' : '0',
             }}
           >
             {achievement.description}
           </p>
+        )}
+
+        {onClick && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
+            <span
+              style={{
+                fontSize: '11px',
+                color: config.color,
+                fontWeight: 600,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px',
+                opacity: 0.85,
+                fontFamily: 'JetBrains Mono, monospace',
+              }}
+            >
+              Details →
+            </span>
+          </div>
         )}
       </div>
     </div>
