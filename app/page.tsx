@@ -140,6 +140,77 @@ export default async function HomePage() {
             white-space: nowrap !important;
             display: inline-block;
           }
+          .hero-cutout-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 440px;
+            height: clamp(380px, 48vw, 530px);
+            z-index: 10;
+          }
+          .hero-cutout-aura {
+            position: absolute;
+            top: 4%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(380px, 85vw);
+            height: min(380px, 85vw);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.45) 0%, rgba(139, 92, 246, 0.25) 45%, transparent 75%);
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 1;
+            animation: glow-pulse 4s ease-in-out infinite;
+          }
+          .hero-cutout-img {
+            position: relative;
+            z-index: 2;
+            width: auto;
+            max-width: 100%;
+            height: 100%;
+            max-height: 530px;
+            object-fit: contain;
+            object-position: bottom center;
+            display: block;
+            filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 35px rgba(99, 102, 241, 0.25));
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+          }
+          .hero-floating-badge-top {
+            position: absolute;
+            top: 14px;
+            left: 10px;
+            background: rgba(13, 13, 20, 0.88);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 5;
+          }
+          .hero-floating-badge-bottom {
+            position: absolute;
+            bottom: 24px;
+            right: 10px;
+            background: rgba(13, 13, 20, 0.88);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 5;
+          }
           .hero-bust-wrapper {
             position: relative;
             display: flex;
@@ -389,102 +460,59 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Center Column: Front-View Bust Display */}
-            <div className="hero-bust-wrapper">
-              <div
-                className="hero-bust-aura"
-                style={{
-                  position: 'absolute',
-                  inset: -14,
-                  borderRadius: '36px',
-                  background: 'radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(139, 92, 246, 0.25) 40%, transparent 70%)',
-                  filter: 'blur(20px)',
-                  pointerEvents: 'none',
-                  animation: 'glow-pulse 4s ease-in-out infinite',
-                }}
+            {/* Center Column: Cutout Body Display (Seamlessly overlapping with website) */}
+            <div className="hero-cutout-wrapper">
+              {/* Glowing Aura directly behind body */}
+              <div className="hero-cutout-aura" />
+
+              {/* Floating Top Status Badge */}
+              <div className="hero-floating-badge-top">
+                <span
+                  style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: '50%',
+                    background: '#10b981',
+                    boxShadow: '0 0 8px #10b981',
+                    display: 'inline-block',
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: '11px',
+                    color: '#10b981',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  AVAILABLE FOR ROLES
+                </span>
+              </div>
+
+              {/* Transparent Cutout Body Image */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/profile-cutout.png"
+                alt="Mourish Antony C — ML Engineer"
+                className="hero-cutout-img"
               />
-              <div
-                className="hero-bust-card"
-                style={{
-                  position: 'relative',
-                  width: 'min(360px, 86vw)',
-                  height: '480px',
-                  borderRadius: '28px',
-                  overflow: 'hidden',
-                  border: '1.5px solid rgba(99, 102, 241, 0.4)',
-                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(99, 102, 241, 0.25)',
-                  background: 'linear-gradient(180deg, #13131f 0%, #0d0d14 100%)',
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  justifyContent: 'center',
-                }}
-              >
-                {/* Floating Top Status Badge */}
-                <div className="hero-floating-badge-top">
-                  <span
-                    style={{
-                      width: 7,
-                      height: 7,
-                      borderRadius: '50%',
-                      background: '#10b981',
-                      boxShadow: '0 0 8px #10b981',
-                      display: 'inline-block',
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: '11px',
-                      color: '#10b981',
-                      fontWeight: 700,
-                      letterSpacing: '0.04em',
-                      fontFamily: 'JetBrains Mono, monospace',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    AVAILABLE FOR ROLES
-                  </span>
-                </div>
 
-                {/* Profile Portrait Image */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/profile.jpg"
-                  alt="Mourish Antony C — ML Engineer"
-                  className="hero-bust-img"
+              {/* Floating Bottom Skill Pill */}
+              <div className="hero-floating-badge-bottom">
+                <Sparkles size={13} color="#818cf8" />
+                <span
                   style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'center 12%',
-                    display: 'block',
+                    fontSize: '11px',
+                    color: '#e2e8f0',
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
                   }}
-                />
-
-                {/* Bottom Shadow Vignette */}
-                <div
-                  className="hero-bust-vignette"
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to top, #050508 0%, rgba(5, 5, 8, 0.6) 20%, transparent 55%)',
-                    pointerEvents: 'none',
-                  }}
-                />
-
-                {/* Floating Bottom Skill Pill */}
-                <div className="hero-floating-badge-bottom">
-                  <Sparkles size={13} color="#818cf8" />
-                  <span
-                    style={{
-                      fontSize: '11px',
-                      color: '#e2e8f0',
-                      fontWeight: 600,
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Production AI & LLMs
-                  </span>
-                </div>
+                >
+                  Production AI & LLMs
+                </span>
               </div>
             </div>
 
