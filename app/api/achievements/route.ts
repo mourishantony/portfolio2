@@ -136,3 +136,63 @@ export async function DELETE(request: NextRequest) {
     return Response.json({ error: 'Internal server error.' }, { status: 500 })
   }
 }
+
+// PATCH /api/achievements?id=… — update an existing achievement (protected)
+export async function PATCH(request: NextRequest) {
+  const authError = await requireAuth()
+  if (authError) return authError
+
+  try {
+    const id = new URL(request.url).searchParams.get('id')
+    if (!id) {
+      return Response.json({ error: 'Missing achievement id.' }, { status: 400 })
+    }
+
+    const { title, description, date, badge_type } = (await request.json()) as {
+      title: string
+      description?: string | null
+      date?: string | null
+      badge_type: 'gold' | 'silver' | 'bronze' | 'award'
+    }
+
+    if (!title || !badge_type) {
+      return Response.json({ error: 'Missing required fields: title, badge_type.' }, { status: 400 })
+    }
+    const validBadges = ['gold', 'silver', 'bronze', 'award']
+    if (!validBadges.includes(badge_type)) {
+      return Response.json({ error: `badge_type must be one of: ${validBadges.join(', ')}` }, { status: 400 })
+    }
+
+    const supabase = serverClient()
+    if (!supabase) {
+      return Response.json(
+        { error: 'Supabase is not configured. Please add your credentials in .env.local.' },
+        { status: 503 }
+      )
+    }
+    const { data, error } = await supabase
+      .from('achievements')
+      .update({ title, description: description || null, date: date || null, badge_type })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[PATCH /api/achievements] Supabase error:', error.message)
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+        return Response.json({
+          error: 'Supabase Row-Level Security blocked this update. Please add your SUPABASE_SERVICE_ROLE_KEY to .env.local (from Supabase Dashboard → Project Settings → API Keys).'
+        }, { status: 403 })
+      }
+      if (error.code === 'PGRST116') {
+        return Response.json({ error: 'Achievement not found.' }, { status: 404 })
+      }
+      return Response.json({ error: error.message }, { status: 500 })
+    }
+
+    return Response.json({ success: true, achievement: data }, { status: 200 })
+  } catch (error) {
+    console.error('[PATCH /api/achievements] Error:', error)
+    return Response.json({ error: 'Internal server error.' }, { status: 500 })
+  }
+}

@@ -129,3 +129,68 @@ export async function DELETE(request: NextRequest) {
     return Response.json({ error: 'Internal server error.' }, { status: 500 })
   }
 }
+
+// PATCH /api/projects?id=… — update an existing project (protected)
+export async function PATCH(request: NextRequest) {
+  const authError = await requireAuth()
+  if (authError) return authError
+
+  try {
+    const id = new URL(request.url).searchParams.get('id')
+    if (!id) {
+      return Response.json({ error: 'Missing project id.' }, { status: 400 })
+    }
+
+    const body = await request.json()
+    const {
+      title, description, github_url, live_demo_url,
+      tech_stack, metrics_summary, category, featured,
+    } = body
+
+    if (!title || !description || !tech_stack || !category) {
+      return Response.json({ error: 'Missing required fields: title, description, tech_stack, category.' }, { status: 400 })
+    }
+
+    const supabase = serverClient()
+    if (!supabase) {
+      return Response.json(
+        { error: 'Supabase is not configured. Please add your credentials in .env.local.' },
+        { status: 503 }
+      )
+    }
+    // Only whitelisted columns are written; id/created_at are never changed
+    const { data, error } = await supabase
+      .from('projects')
+      .update({
+        title,
+        description,
+        github_url:      github_url || null,
+        live_demo_url:   live_demo_url || null,
+        tech_stack:      Array.isArray(tech_stack) ? tech_stack : [tech_stack],
+        metrics_summary: metrics_summary || null,
+        category,
+        featured:        Boolean(featured),
+      })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('[PATCH /api/projects] Supabase error:', error.message)
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+        return Response.json({
+          error: 'Supabase Row-Level Security blocked this update. Please add your SUPABASE_SERVICE_ROLE_KEY to .env.local (from Supabase Dashboard → Project Settings → API Keys).'
+        }, { status: 403 })
+      }
+      if (error.code === 'PGRST116') {
+        return Response.json({ error: 'Project not found.' }, { status: 404 })
+      }
+      return Response.json({ error: error.message }, { status: 500 })
+    }
+
+    return Response.json({ success: true, project: data }, { status: 200 })
+  } catch (error) {
+    console.error('[PATCH /api/projects] Error:', error)
+    return Response.json({ error: 'Internal server error.' }, { status: 500 })
+  }
+}

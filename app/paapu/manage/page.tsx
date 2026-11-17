@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import {
   Plus, Trash2, LogOut, Database, Activity,
   Trophy, CheckCircle, AlertCircle, ChevronDown, ChevronUp,
-  ExternalLink, GitBranch, RefreshCw
+  ExternalLink, GitBranch, RefreshCw, Pencil,
 } from 'lucide-react'
 import type { Project, Achievement } from '@/lib/types'
 
@@ -184,16 +184,58 @@ function SubmitBtn({ loading, label }: { loading: boolean; label: string }) {
   )
 }
 
+// ── Submit button with an optional Cancel (used when editing) ─────────────
+function FormActions({ loading, label, onCancel }: { loading: boolean; label: string; onCancel?: () => void }) {
+  if (!onCancel) return <SubmitBtn loading={loading} label={label} />
+  return (
+    <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
+      <div style={{ flex: 1 }}><SubmitBtn loading={loading} label={label} /></div>
+      <button
+        type="button"
+        onClick={onCancel}
+        style={{
+          padding: '0 18px', borderRadius: '10px', background: 'rgba(255,255,255,0.06)',
+          border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+        }}
+      >
+        Cancel
+      </button>
+    </div>
+  )
+}
+
+function EditBtn({ id, onClick }: { id: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      id={id}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: '6px',
+        background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.25)',
+        color: '#818cf8', fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+      }}
+    >
+      <Pencil size={13} />
+      Edit
+    </button>
+  )
+}
+
 // ── ADD PROJECT FORM ──────────────────────────────────────────────────────
-function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => void }) {
-  const [title, setTitle]           = useState('')
-  const [description, setDesc]      = useState('')
-  const [github, setGithub]         = useState('')
-  const [demo, setDemo]             = useState('')
-  const [techStack, setTechStack]   = useState('')
-  const [metrics, setMetrics]       = useState('')
-  const [category, setCategory]     = useState('llm')
-  const [featured, setFeatured]     = useState(false)
+// Pass `initial` to edit an existing project (PATCH) instead of adding one (POST)
+function AddProjectForm({
+  onProjectAdded, initial, onCancel,
+}: { onProjectAdded?: (p: Project) => void; initial?: Project; onCancel?: () => void }) {
+  const isEdit = Boolean(initial)
+  const idp = isEdit ? `edit-${initial!.id}-` : ''
+  const [title, setTitle]           = useState(initial?.title ?? '')
+  const [description, setDesc]      = useState(initial?.description ?? '')
+  const [github, setGithub]         = useState(initial?.github_url?.trim() ?? '')
+  const [demo, setDemo]             = useState(initial?.live_demo_url?.trim() ?? '')
+  const [techStack, setTechStack]   = useState(initial?.tech_stack?.join(', ') ?? '')
+  const [metrics, setMetrics]       = useState(initial?.metrics_summary ?? '')
+  const [category, setCategory]     = useState<string>(initial?.category ?? 'llm')
+  const [featured, setFeatured]     = useState(initial?.featured ?? false)
   const [status, setStatus]         = useState<Status>(null)
   const [loading, setLoading]       = useState(false)
 
@@ -202,8 +244,8 @@ function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => v
     setLoading(true)
     setStatus(null)
     try {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
+      const res = await fetch(isEdit ? `/api/projects?id=${encodeURIComponent(initial!.id)}` : '/api/projects', {
+        method: isEdit ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title, description,
@@ -217,14 +259,16 @@ function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => v
       })
       const d = await res.json().catch(() => ({}))
       if (res.ok) {
-        setStatus({ type: 'success', message: '✅ Project added! It is now live on your portfolio.' })
+        setStatus({ type: 'success', message: isEdit ? '✅ Project updated!' : '✅ Project added! It is now live on your portfolio.' })
         if (d.project && onProjectAdded) {
           onProjectAdded(d.project)
         }
-        setTitle(''); setDesc(''); setGithub(''); setDemo(''); setTechStack(''); setMetrics('')
-        setCategory('llm'); setFeatured(false)
+        if (!isEdit) {
+          setTitle(''); setDesc(''); setGithub(''); setDemo(''); setTechStack(''); setMetrics('')
+          setCategory('llm'); setFeatured(false)
+        }
       } else {
-        setStatus({ type: 'error', message: d.error ?? 'Failed to add project.' })
+        setStatus({ type: 'error', message: d.error ?? (isEdit ? 'Failed to update project.' : 'Failed to add project.') })
       }
     } catch {
       setStatus({ type: 'error', message: 'Network error.' })
@@ -236,15 +280,15 @@ function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => v
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <StatusBanner status={status} />
-      <InputField label="Project Title" id="proj-title" required placeholder="GPT-4 Fine-tuning Pipeline" value={title} onChange={setTitle} />
-      <TextAreaField label="Description" id="proj-desc" required placeholder="Describe what this project does, its scale, and impact..." value={description} onChange={setDesc} />
+      <InputField label="Project Title" id={idp + 'proj-title'} required placeholder="GPT-4 Fine-tuning Pipeline" value={title} onChange={setTitle} />
+      <TextAreaField label="Description" id={idp + 'proj-desc'} required placeholder="Describe what this project does, its scale, and impact..." value={description} onChange={setDesc} />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-        <InputField label="GitHub URL" id="proj-github" type="url" placeholder="https://github.com/mourishantony/..." value={github} onChange={setGithub} />
-        <InputField label="Live Demo URL" id="proj-demo" type="url" placeholder="https://demo.example.com" value={demo} onChange={setDemo} />
+        <InputField label="GitHub URL" id={idp + 'proj-github'} type="url" placeholder="https://github.com/mourishantony/..." value={github} onChange={setGithub} />
+        <InputField label="Live Demo URL" id={idp + 'proj-demo'} type="url" placeholder="https://demo.example.com" value={demo} onChange={setDemo} />
       </div>
       <InputField
         label="Tech Stack (comma-separated)"
-        id="proj-tech"
+        id={idp + 'proj-tech'}
         required
         placeholder="PyTorch, Hugging Face, FastAPI, Docker, K8s"
         value={techStack}
@@ -252,14 +296,14 @@ function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => v
       />
       <InputField
         label="Metrics Summary (terminal style)"
-        id="proj-metrics"
+        id={idp + 'proj-metrics'}
         placeholder="Achieves 98.2% accuracy · 3.2× faster than baseline · serving 10K req/day"
         value={metrics}
         onChange={setMetrics}
       />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
         <SelectField
-          label="Category" id="proj-cat" required value={category} onChange={setCategory}
+          label="Category" id={idp + 'proj-cat'} required value={category} onChange={setCategory}
           options={[
             { value: 'llm',   label: '🤖 LLM / Generative AI' },
             { value: 'cv',    label: '👁 Computer Vision' },
@@ -271,7 +315,7 @@ function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => v
         <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2px' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
             <input
-              id="proj-featured"
+              id={idp + 'proj-featured'}
               type="checkbox"
               checked={featured}
               onChange={(e) => setFeatured(e.target.checked)}
@@ -281,7 +325,7 @@ function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => v
           </label>
         </div>
       </div>
-      <SubmitBtn loading={loading} label="Save Project" />
+      <FormActions loading={loading} label={isEdit ? 'Update Project' : 'Save Project'} onCancel={onCancel} />
     </form>
   )
 }
@@ -289,6 +333,7 @@ function AddProjectForm({ onProjectAdded }: { onProjectAdded?: (p: Project) => v
 // ── MANAGE & REMOVE PROJECTS SECTION ─────────────────────────────────────
 function ManageProjectsTab() {
   const [projects, setProjects] = useState<Project[]>([])
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -514,8 +559,11 @@ function ManageProjectsTab() {
                   </div>
                 </div>
 
-                {/* Remove / Delete Actions */}
+                {/* Edit / Remove Actions */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {editingId !== p.id && confirmId !== p.id && (
+                    <EditBtn id={`edit-project-${p.id}`} onClick={() => { setEditingId(p.id); setStatus(null) }} />
+                  )}
                   {confirmId === p.id ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <button
@@ -581,6 +629,20 @@ function ManageProjectsTab() {
                     </button>
                   )}
                 </div>
+
+                {editingId === p.id && (
+                  <div style={{ flexBasis: '100%', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '16px' }}>
+                    <AddProjectForm
+                      initial={p}
+                      onCancel={() => setEditingId(null)}
+                      onProjectAdded={(updated) => {
+                        setProjects((prev) => prev.map((x) => (x.id === updated.id ? updated : x)))
+                        setEditingId(null)
+                        setStatus({ type: 'success', message: `✅ Updated "${updated.title}".` })
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -593,6 +655,7 @@ function ManageProjectsTab() {
 // ── MANAGE & REMOVE ACHIEVEMENTS SECTION ─────────────────────────────────
 function ManageAchievementsTab() {
   const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -793,8 +856,11 @@ function ManageAchievementsTab() {
                   )}
                 </div>
 
-                {/* Remove Actions */}
+                {/* Edit / Remove Actions */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {editingId !== a.id && confirmId !== a.id && (
+                    <EditBtn id={`edit-achievement-${a.id}`} onClick={() => { setEditingId(a.id); setStatus(null) }} />
+                  )}
                   {confirmId === a.id ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <button
@@ -860,6 +926,20 @@ function ManageAchievementsTab() {
                     </button>
                   )}
                 </div>
+
+                {editingId === a.id && (
+                  <div style={{ flexBasis: '100%', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '16px' }}>
+                    <AddAchievementForm
+                      initial={a}
+                      onCancel={() => setEditingId(null)}
+                      onAchievementAdded={(updated) => {
+                        setAchievements((prev) => prev.map((x) => (x.id === updated.id ? updated : x)))
+                        setEditingId(null)
+                        setStatus({ type: 'success', message: `✅ Updated "${updated.title}".` })
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -870,11 +950,16 @@ function ManageAchievementsTab() {
 }
 
 // ── ADD ACHIEVEMENT FORM ──────────────────────────────────────────────────
-function AddAchievementForm({ onAchievementAdded }: { onAchievementAdded?: (a: Achievement) => void }) {
-  const [title, setTitle]       = useState('')
-  const [desc, setDesc]         = useState('')
-  const [date, setDate]         = useState('')
-  const [badge, setBadge]       = useState('award')
+// Pass `initial` to edit an existing achievement (PATCH) instead of adding one (POST)
+function AddAchievementForm({
+  onAchievementAdded, initial, onCancel,
+}: { onAchievementAdded?: (a: Achievement) => void; initial?: Achievement; onCancel?: () => void }) {
+  const isEdit = Boolean(initial)
+  const idp = isEdit ? `edit-${initial!.id}-` : ''
+  const [title, setTitle]       = useState(initial?.title ?? '')
+  const [desc, setDesc]         = useState(initial?.description ?? '')
+  const [date, setDate]         = useState(initial?.date?.slice(0, 10) ?? '')
+  const [badge, setBadge]       = useState<string>(initial?.badge_type ?? 'award')
   const [status, setStatus]     = useState<Status>(null)
   const [loading, setLoading]   = useState(false)
 
@@ -883,20 +968,22 @@ function AddAchievementForm({ onAchievementAdded }: { onAchievementAdded?: (a: A
     setLoading(true)
     setStatus(null)
     try {
-      const res = await fetch('/api/achievements', {
-        method: 'POST',
+      const res = await fetch(isEdit ? `/api/achievements?id=${encodeURIComponent(initial!.id)}` : '/api/achievements', {
+        method: isEdit ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description: desc || null, date: date || null, badge_type: badge }),
       })
       const d = await res.json().catch(() => ({}))
       if (res.ok) {
-        setStatus({ type: 'success', message: '✅ Achievement added! It is now live on the portfolio.' })
+        setStatus({ type: 'success', message: isEdit ? '✅ Achievement updated!' : '✅ Achievement added! It is now live on the portfolio.' })
         if (d.achievement && onAchievementAdded) {
           onAchievementAdded(d.achievement)
         }
-        setTitle(''); setDesc(''); setDate(''); setBadge('award')
+        if (!isEdit) {
+          setTitle(''); setDesc(''); setDate(''); setBadge('award')
+        }
       } else {
-        setStatus({ type: 'error', message: d.error ?? 'Failed to add achievement.' })
+        setStatus({ type: 'error', message: d.error ?? (isEdit ? 'Failed to update achievement.' : 'Failed to add achievement.') })
       }
     } catch {
       setStatus({ type: 'error', message: 'Network error.' })
@@ -908,12 +995,12 @@ function AddAchievementForm({ onAchievementAdded }: { onAchievementAdded?: (a: A
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <StatusBanner status={status} />
-      <InputField label="Achievement Title" id="ach-title" required placeholder="1st Place — IEEE AI Hackathon 2025" value={title} onChange={setTitle} />
-      <TextAreaField label="Description" id="ach-desc" placeholder="Brief description of what you achieved..." value={desc} onChange={setDesc} />
+      <InputField label="Achievement Title" id={idp + 'ach-title'} required placeholder="1st Place — IEEE AI Hackathon 2025" value={title} onChange={setTitle} />
+      <TextAreaField label="Description" id={idp + 'ach-desc'} placeholder="Brief description of what you achieved..." value={desc} onChange={setDesc} />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-        <InputField label="Date" id="ach-date" type="date" value={date} onChange={setDate} />
+        <InputField label="Date" id={idp + 'ach-date'} type="date" value={date} onChange={setDate} />
         <SelectField
-          label="Badge Type" id="ach-badge" required value={badge} onChange={setBadge}
+          label="Badge Type" id={idp + 'ach-badge'} required value={badge} onChange={setBadge}
           options={[
             { value: 'gold',   label: '🥇 Gold' },
             { value: 'silver', label: '🥈 Silver' },
@@ -922,7 +1009,7 @@ function AddAchievementForm({ onAchievementAdded }: { onAchievementAdded?: (a: A
           ]}
         />
       </div>
-      <SubmitBtn loading={loading} label="Save Achievement" />
+      <FormActions loading={loading} label={isEdit ? 'Update Achievement' : 'Save Achievement'} onCancel={onCancel} />
     </form>
   )
 }
