@@ -1,250 +1,135 @@
 'use client'
 // components/Navbar.tsx
+// ─────────────────────────────────────────────────────────────────────────────
+// Sticky top navigation with blur-on-scroll and a mobile menu
+// ─────────────────────────────────────────────────────────────────────────────
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { Menu, X, Brain, BarChart3, Mail } from 'lucide-react'
-import {
-  GithubIcon, LinkedinIcon, XIcon, InstagramIcon, FacebookIcon
-} from '@/components/ui/SocialIcons'
+import { Menu, X } from 'lucide-react'
+import { GithubIcon, LinkedinIcon } from '@/components/ui/SocialIcons'
+import { LINKS, PROFILE } from '@/lib/profile'
 
-const navLinks = [
+const NAV_LINKS = [
   { label: 'About', href: '/#about' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Skills', href: '/#skills' },
   { label: 'Projects', href: '/#projects' },
-  { label: 'Achievements', href: '/#achievements' },
-  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Awards', href: '/#achievements' },
+  { label: 'Certificates', href: '/#certificates' },
+  { label: 'Gallery', href: '/#gallery' },
+  { label: 'Contact', href: '/#contact' },
 ]
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
+    const onScroll = () => setScrolled(window.scrollY > 12)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
     <header
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        transition: 'all 0.3s ease',
-        background: scrolled
-          ? 'rgba(5,5,8,0.85)'
-          : 'transparent',
-        backdropFilter: scrolled ? 'blur(16px)' : 'none',
-        borderBottom: scrolled
-          ? '1px solid rgba(99,102,241,0.12)'
-          : '1px solid transparent',
-      }}
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        scrolled || open
+          ? 'border-b border-white/[0.06] bg-background/80 backdrop-blur-md'
+          : 'border-b border-transparent'
+      }`}
     >
-      <nav
-        style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '0 24px',
-          height: '64px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-          <div style={{
-            width: 36, height: 36,
-            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-            borderRadius: '10px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 0 16px rgba(99,102,241,0.4)',
-          }}>
-            <Brain size={18} color="white" />
-          </div>
-          <span style={{
-            fontFamily: 'JetBrains Mono, monospace',
-            fontWeight: 700,
-            fontSize: '15px',
-            color: '#e2e8f0',
-            letterSpacing: '-0.02em',
-          }}>
-            mourish<span style={{ color: '#6366f1' }}>.ai</span>
-          </span>
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+        <Link href="/" className="font-mono text-sm font-semibold tracking-tight text-foreground">
+          mourish<span className="text-accent">.</span>dev
         </Link>
 
-        {/* Desktop nav links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }} className="hidden-mobile">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                color: '#94a3b8',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: 500,
-                transition: 'color 0.2s',
-                letterSpacing: '0.01em',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#e2e8f0')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
-            >
-              {link.label}
-            </Link>
+        <ul className="hidden items-center gap-1 lg:flex">
+          {NAV_LINKS.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className="rounded-md px-3 py-2 text-sm text-muted-light transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {/* Social icons + CTA */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }} className="hidden-mobile">
-          {[
-            { icon: GithubIcon, href: 'https://github.com/mourishantony', label: 'GitHub' },
-            { icon: LinkedinIcon, href: 'https://www.linkedin.com/in/mourishantonyc/', label: 'LinkedIn' },
-            { icon: XIcon, href: 'https://x.com/', label: 'X (Twitter)' },
-            { icon: InstagramIcon, href: 'https://instagram.com/', label: 'Instagram' },
-            { icon: FacebookIcon, href: 'https://facebook.com/', label: 'Facebook' },
-            { icon: Mail, href: 'mailto:mourishantonyc@gmail.com', label: 'Email' },
-          ].map(({ icon: Icon, href, label }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              style={{
-                color: '#94a3b8',
-                transition: 'color 0.2s, transform 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#e2e8f0'
-                e.currentTarget.style.transform = 'translateY(-1px)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#94a3b8'
-                e.currentTarget.style.transform = 'translateY(0)'
-              }}
-            >
-              <Icon size={18} />
-            </a>
-          ))}
-          <Link
-            href="/dashboard"
-            style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              color: 'white',
-              padding: '8px 16px',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              fontSize: '13px',
-              fontWeight: 600,
-              boxShadow: '0 0 20px rgba(99,102,241,0.25)',
-              transition: 'box-shadow 0.2s',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.boxShadow = '0 0 32px rgba(99,102,241,0.5)')}
-            onMouseLeave={(e) => (e.currentTarget.style.boxShadow = '0 0 20px rgba(99,102,241,0.25)')}
+        <div className="hidden items-center gap-2 lg:flex">
+          <a
+            href={LINKS.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="rounded-md p-2 text-muted-light transition-colors hover:text-foreground"
           >
-            <BarChart3 size={14} />
-            MLOps Dashboard
-          </Link>
+            <GithubIcon size={18} />
+          </a>
+          <a
+            href={LINKS.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="rounded-md p-2 text-muted-light transition-colors hover:text-foreground"
+          >
+            <LinkedinIcon size={18} />
+          </a>
+          <a
+            href={PROFILE.resume}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-500 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            Résumé
+          </a>
         </div>
 
-        {/* Mobile hamburger */}
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
-          className="show-mobile"
+          type="button"
+          onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
+          aria-expanded={open}
+          className="rounded-md p-2 text-muted-light lg:hidden"
         >
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </nav>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div style={{
-          background: 'rgba(5,5,8,0.97)',
-          borderTop: '1px solid rgba(99,102,241,0.15)',
-          padding: '16px 24px 24px',
-        }}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                display: 'block',
-                padding: '12px 0',
-                color: '#94a3b8',
-                textDecoration: 'none',
-                fontSize: '15px',
-                fontWeight: 500,
-                borderBottom: '1px solid rgba(255,255,255,0.04)',
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Link
-            href="/dashboard"
-            onClick={() => setMenuOpen(false)}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '8px',
-              marginTop: '16px',
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              color: 'white',
-              padding: '10px 20px',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              fontSize: '14px',
-              fontWeight: 600,
-            }}
+      {open && (
+        <div className="border-t border-white/[0.06] px-5 pb-6 pt-2 lg:hidden">
+          <ul className="flex flex-col">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="block py-3 text-base text-muted-light hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={PROFILE.resume}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-block rounded-lg bg-gradient-to-r from-violet-600 to-indigo-500 px-4 py-2 text-sm font-semibold text-white"
           >
-            <BarChart3 size={15} />
-            MLOps Dashboard
-          </Link>
-
-          {/* Mobile social links */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap',
-            marginTop: '20px', paddingTop: '16px',
-            borderTop: '1px solid rgba(255,255,255,0.06)',
-          }}>
-            <a href="https://github.com/mourishantony" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
-              <GithubIcon size={16} /> GitHub
+            Résumé
+          </a>
+          <div className="mt-4 flex gap-4 text-muted-light">
+            <a href={LINKS.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <GithubIcon size={20} />
             </a>
-            <a href="https://www.linkedin.com/in/mourishantonyc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
-              <LinkedinIcon size={16} /> LinkedIn
-            </a>
-            <a href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
-              <XIcon size={15} /> X
-            </a>
-            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
-              <InstagramIcon size={16} /> Instagram
-            </a>
-            <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
-              <FacebookIcon size={16} /> Facebook
-            </a>
-            <a href="mailto:mourishantonyc@gmail.com" aria-label="Email" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', textDecoration: 'none' }}>
-              <Mail size={16} /> Email
+            <a href={LINKS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <LinkedinIcon size={20} />
             </a>
           </div>
         </div>
       )}
-
-      <style>{`
-        @media (max-width: 768px) {
-          .hidden-mobile { display: none !important; }
-        }
-        @media (min-width: 769px) {
-          .show-mobile { display: none !important; }
-        }
-      `}</style>
     </header>
   )
 }
