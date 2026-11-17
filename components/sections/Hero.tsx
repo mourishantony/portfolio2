@@ -68,7 +68,7 @@ export default function Hero({ stats }: { stats: GithubStats | null }) {
           <p className="text-2xl font-medium text-muted-light sm:text-3xl">Hello, I&apos;m</p>
           <h1 className="mt-2 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
             <span className="font-mono text-accent/60">{'{'}</span>
-            <span className="gradient-text">{PROFILE.name}</span>
+            <span className="gradient-text-animated">{PROFILE.name}</span>
             <span className="font-mono text-accent/60">{'}'}</span>
           </h1>
 
@@ -117,13 +117,36 @@ export default function Hero({ stats }: { stats: GithubStats | null }) {
               <Mail size={16} /> Get in touch
             </a>
           </div>
+
+          {/* Phones: social links (the connected nodes beside the portrait are sm+) */}
+          <ul className="mt-6 flex items-center gap-3 sm:hidden">
+            {NODES.map(({ href, label, icon: Icon }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/[0.03] text-foreground transition-colors hover:border-accent hover:text-accent"
+                >
+                  <Icon size={18} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Right: cutout portrait */}
         <div className="animate-fade-up relative mx-auto flex h-[440px] w-full max-w-md items-end justify-center [animation-delay:150ms] sm:h-[540px] lg:h-[620px] lg:max-w-none">
           {/* Glow disc behind the portrait */}
-          <div className="absolute bottom-10 left-1/2 aspect-square w-[88%] max-w-[470px] -translate-x-1/2 rounded-full bg-gradient-to-br from-violet-600/70 via-indigo-600/40 to-transparent blur-[2px]" />
+          <div className="absolute bottom-10 left-1/2 aspect-square w-[88%] max-w-[470px] -translate-x-1/2 rounded-full bg-gradient-to-br from-violet-600/70 via-indigo-600/40 to-transparent blur-[2px] animate-glow" />
           <div className="absolute bottom-10 left-1/2 aspect-square w-[88%] max-w-[470px] -translate-x-1/2 rounded-full border border-violet-300/20" />
+          {/* Slowly rotating dashed orbit */}
+          <div className="absolute bottom-[-0.5rem] left-1/2 aspect-square w-[100%] max-w-[540px] -translate-x-1/2">
+            <div className="animate-spin-slow h-full w-full rounded-full border border-dashed border-violet-400/25">
+              <span className="absolute left-1/2 top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-300 shadow-[0_0_12px_4px_rgba(167,139,250,0.7)]" />
+            </div>
+          </div>
 
           <Image
             src="/portrait-cutout.webp"
@@ -138,14 +161,14 @@ export default function Hero({ stats }: { stats: GithubStats | null }) {
           {/* Connected social nodes */}
           <svg
             aria-hidden
-            className="absolute right-0 top-[18%] z-20 hidden h-[260px] w-[120px] sm:block"
+            className="animate-float-slow absolute right-0 top-[18%] z-20 hidden h-[260px] w-[120px] sm:block"
             viewBox="0 0 120 260"
             fill="none"
           >
             <path d="M10 10 L 60 30 L 100 120 L 60 220" stroke="#a78bfa" strokeOpacity="0.5" strokeWidth="1.2" />
             <circle cx="10" cy="10" r="3" fill="#a78bfa" />
           </svg>
-          <ul className="absolute right-0 top-[18%] z-20 hidden h-[260px] w-[120px] sm:block">
+          <ul className="animate-float-slow absolute right-0 top-[18%] z-20 hidden h-[260px] w-[120px] sm:block">
             {NODES.map(({ href, label, icon: Icon }, i) => (
               <li
                 key={label}
@@ -166,7 +189,7 @@ export default function Hero({ stats }: { stats: GithubStats | null }) {
           </ul>
 
           {/* Floating chips */}
-          <div className="absolute bottom-24 left-0 z-20 rounded-xl border border-white/10 bg-background/80 px-3.5 py-2.5 backdrop-blur sm:left-2">
+          <div className="animate-float absolute bottom-24 left-0 z-20 rounded-xl border border-white/10 bg-background/80 px-3.5 py-2.5 backdrop-blur sm:left-2">
             <p className="text-[11px] uppercase tracking-wider text-muted">Focus</p>
             <p className="text-sm font-medium text-foreground">Computer Vision · FastAPI</p>
           </div>

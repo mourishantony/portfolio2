@@ -17,6 +17,7 @@ import Achievements from '@/components/sections/Achievements'
 import Gallery from '@/components/sections/Gallery'
 import Certificates from '@/components/sections/Certificates'
 import Contact from '@/components/sections/Contact'
+import ScrollEffects from '@/components/ui/ScrollEffects'
 
 // Always fetch fresh data — no stale cache
 export const dynamic = 'force-dynamic'
@@ -79,6 +80,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <ScrollEffects />
       <Hero stats={githubStats} />
       <About />
       <Experience />

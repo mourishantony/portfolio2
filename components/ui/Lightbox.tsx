@@ -4,7 +4,7 @@
 // Full-size image viewer with title + caption underneath.
 // Closes on Escape / backdrop click; ←/→ step through when onPrev/onNext given.
 // ─────────────────────────────────────────────────────────────────────────────
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
@@ -42,8 +42,20 @@ export default function Lightbox({
     }
   }, [onClose, onPrev, onNext])
 
+  // Swipe left/right on touch screens
+  const touchX = useRef<number | null>(null)
+  const onTouchStart = (e: React.TouchEvent) => (touchX.current = e.touches[0].clientX)
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchX.current === null) return
+    const dx = e.changedTouches[0].clientX - touchX.current
+    touchX.current = null
+    if (dx > 50) onPrev?.()
+    else if (dx < -50) onNext?.()
+  }
+
+  // Phones: arrows sit below the photo; larger screens: vertically centred
   const navBtn =
-    'absolute top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/20 bg-black/60 p-2 text-white hover:bg-white/10'
+    'absolute bottom-6 z-10 rounded-full sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 border border-white/20 bg-black/60 p-2 text-white hover:bg-white/10'
 
   return (
     <div
@@ -51,7 +63,9 @@ export default function Lightbox({
       aria-modal="true"
       aria-label={item.title}
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-8"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      className="animate-lightbox fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 pb-24 backdrop-blur-sm sm:p-8"
     >
       <button
         type="button"
@@ -97,7 +111,7 @@ export default function Lightbox({
           height={item.height}
           sizes="90vw"
           loading="eager"
-          className="max-h-[78vh] w-auto rounded-lg object-contain"
+          className="animate-zoom-in max-h-[70vh] w-auto rounded-lg object-contain sm:max-h-[78vh]"
         />
         <figcaption className="mt-4 max-w-2xl text-center">
           <p className="text-base font-semibold text-white">{item.title}</p>

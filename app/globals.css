@@ -98,7 +98,7 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .glass-card:hover {
@@ -114,4 +114,61 @@ body {
 .grid-mask {
   mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 75%);
+}
+
+/* ── Scroll reveal (driven by components/ui/ScrollEffects.tsx) ───────────── */
+/* Animation (not transition) so element hover transitions stay intact;
+   fill-mode backwards so hover transforms work once it finishes */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(28px) scale(0.98); filter: blur(6px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+
+[data-reveal="hidden"] { opacity: 0; }
+[data-reveal="shown"] {
+  animation: reveal-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms) backwards;
+}
+
+/* ── Ambient motion ──────────────────────────────────────────────────────── */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes gradient-pan {
+  to { background-position: 200% center; }
+}
+
+.animate-float      { animation: float-y 6s ease-in-out infinite; }
+.animate-float-slow { animation: float-y 9s ease-in-out infinite; }
+.animate-spin-slow  { animation: spin 40s linear infinite; }
+.animate-glow       { animation: glow-pulse 4s ease-in-out infinite; }
+
+.gradient-text-animated {
+  background: linear-gradient(90deg, #c4b5fd, #a78bfa, #60a5fa, #e879f9, #c4b5fd);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-pan 8s linear infinite;
+}
+
+/* Card hover lift with a soft violet glow */
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px -12px rgba(124, 58, 237, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1 !important; animation: none !important; }
+  .animate-float, .animate-float-slow, .animate-spin-slow, .animate-glow, .gradient-text-animated { animation: none; }
+  .glass-card:hover { transform: none; }
+}
+
+/* Lightbox open */
+@keyframes lightbox-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes zoom-in { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+.animate-lightbox { animation: lightbox-in 0.2s ease-out; }
+.animate-zoom-in  { animation: zoom-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .animate-lightbox, .animate-zoom-in { animation: none; }
 }
