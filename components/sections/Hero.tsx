@@ -149,13 +149,13 @@ export default function Hero({ stats }: { stats: GithubStats | null }) {
           </div>
 
           <Image
-            src="/portrait-cutout.webp"
+            src="/portrait-hd.webp"
             alt={`Portrait of ${PROFILE.name}`}
-            width={460}
-            height={736}
+            width={900}
+            height={1060}
             priority
-            sizes="(min-width: 1024px) 400px, 70vw"
-            className="relative z-10 h-full w-auto object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_85%,transparent)]"
+            sizes="(min-width: 1024px) 540px, 90vw"
+            className="relative z-10 h-full w-auto max-w-full object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_85%,transparent)]"
           />
 
           {/* Connected social nodes */}

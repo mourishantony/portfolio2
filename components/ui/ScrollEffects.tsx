@@ -3,8 +3,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Scroll progress bar + reveal-on-scroll for every section below the fold.
 // Targets each section's direct children and the items of its grids/lists,
-// staggering siblings. Uses data attributes so React re-renders don't undo it,
-// and only hides elements that start below the viewport (no flash on load).
+// staggering siblings. Replays whenever content scrolls back in from below.
+// Uses data attributes so React re-renders don't undo it, and never hides
+// elements already on screen at load (no flash).
 // ─────────────────────────────────────────────────────────────────────────────
 import { useEffect, useRef } from 'react'
 
@@ -26,48 +27,50 @@ export default function ScrollEffects() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
 
-    // ── Reveal on scroll ──
+    // ── Reveal on scroll (replays every time content enters from below) ──
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    let observer: IntersectionObserver | undefined
-    const pending = new Set<HTMLElement>()
+    const observers: IntersectionObserver[] = []
     if (!reduce && 'IntersectionObserver' in window) {
-      observer = new IntersectionObserver(
+      // Show: element is meaningfully inside the viewport
+      const show = new IntersectionObserver(
         (entries) => {
           // Stagger siblings that enter together (e.g. a row of cards)
           const batch = new Map<Element | null, number>()
           for (const e of entries) {
-            if (!e.isIntersecting) continue
             const el = e.target as HTMLElement
+            if (!e.isIntersecting || el.dataset.reveal !== 'hidden') continue
             const n = batch.get(el.parentElement) ?? 0
             batch.set(el.parentElement, n + 1)
             el.style.setProperty('--reveal-delay', `${Math.min(n, 5) * 90}ms`)
             el.dataset.reveal = 'shown'
-            pending.delete(el)
-            observer?.unobserve(el)
-          }
-          // Anything jumped past (nav link, fast scroll) shows without animating
-          for (const el of pending) {
-            if (el.getBoundingClientRect().bottom >= 0) continue
-            el.dataset.reveal = 'done'
-            pending.delete(el)
-            observer?.unobserve(el)
           }
         },
         { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
       )
+      // Reset: element has fully left through the bottom (user scrolled back up),
+      // so it animates again on the next scroll down. Leaving through the top
+      // keeps it visible, so scrolling up never shows empty space.
+      const reset = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting || e.boundingClientRect.top <= 0) continue
+          ;(e.target as HTMLElement).dataset.reveal = 'hidden'
+        }
+      })
+      observers.push(show, reset)
+
       const fold = window.innerHeight
       document.querySelectorAll<HTMLElement>(TARGETS).forEach((el) => {
-        if (el.dataset.reveal || el.getBoundingClientRect().top < fold) return
-        el.dataset.reveal = 'hidden'
-        pending.add(el)
-        observer!.observe(el)
+        if (el.dataset.reveal) return
+        el.dataset.reveal = el.getBoundingClientRect().top < fold ? 'shown' : 'hidden'
+        show.observe(el)
+        reset.observe(el)
       })
     }
 
     return () => {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(frame)
-      observer?.disconnect()
+      observers.forEach((o) => o.disconnect())
       // Never leave content hidden if this unmounts mid-scroll
       document.querySelectorAll<HTMLElement>('[data-reveal="hidden"]').forEach((el) => (el.dataset.reveal = 'shown'))
     }
