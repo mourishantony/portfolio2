@@ -154,13 +154,35 @@ export const EDUCATION: {
   },
 ]
 
-export const GALLERY: { src: string; width: number; height: number; title: string; caption: string }[] = [
+// First item is the large feature tile; `wide` items span two columns on desktop
+export const GALLERY: {
+  src: string
+  width: number
+  height: number
+  title: string
+  caption: string
+  wide?: boolean
+}[] = [
   {
-    src: '/gallery/sih-2025-finale-team.webp',
-    width: 1280,
-    height: 720,
+    src: '/gallery/sih-2025-joint-winners-stage.webp',
+    width: 800,
+    height: 534,
     title: 'Smart India Hackathon 2025 — Joint Winners',
     caption: 'Grand Finale, 9 Dec 2025 · Team NeuraX25AM05 · Hospital Contact Tracing System',
+  },
+  {
+    src: '/gallery/sih-2025-jury-evaluation.webp',
+    width: 1280,
+    height: 720,
+    title: 'SIH 2025 — Jury Evaluation',
+    caption: 'Walking the jury through our contact-tracing pipeline at the Grand Finale',
+  },
+  {
+    src: '/gallery/sih-2025-live-demo.webp',
+    width: 720,
+    height: 1280,
+    title: 'SIH 2025 — Live Demo',
+    caption: 'Dual-camera re-identification demo for the judges · Grand Finale, Software Edition',
   },
   {
     src: '/gallery/pyexpo-2025-stage.webp',
@@ -184,6 +206,14 @@ export const GALLERY: { src: string; width: number; height: number; title: strin
     caption: 'Awarded by KGiSL Institute of Technology',
   },
   {
+    src: '/gallery/protospark-2026.webp',
+    width: 1280,
+    height: 589,
+    title: 'Protospark 2026 — 3rd Place',
+    caption: 'National-level project competition, Velammal Institute of Technology',
+    wide: true,
+  },
+  {
     src: '/gallery/sih-2025-joint-winners.webp',
     width: 900,
     height: 1600,
@@ -191,25 +221,19 @@ export const GALLERY: { src: string; width: number; height: number; title: strin
     caption: 'Software Edition · Joint winners cheque',
   },
   {
-    src: '/gallery/webforge-fiesta-2026.webp',
-    width: 816,
-    height: 896,
-    title: 'WebForge, Fiesta 2026 — Winner',
-    caption: 'KPR Institutions',
-  },
-  {
-    src: '/gallery/protospark-2026.webp',
-    width: 1280,
-    height: 589,
-    title: 'Protospark 2026 — 3rd Place',
-    caption: 'National-level project competition, Velammal Institute of Technology',
-  },
-  {
     src: '/gallery/pyexpo-2025-team.webp',
     width: 1280,
     height: 575,
     title: 'PyExpo 2025 — Team Tech Trail Blazers',
     caption: 'KGiSL Institute of Technology · IPS Tech Community',
+    wide: true,
+  },
+  {
+    src: '/gallery/webforge-fiesta-2026.webp',
+    width: 816,
+    height: 896,
+    title: 'WebForge, Fiesta 2026 — Winner',
+    caption: 'KPR Institutions',
   },
 ]
 
